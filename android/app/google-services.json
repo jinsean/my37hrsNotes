@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "436415735484",
+    "project_id": "sparkie-new-project",
+    "storage_bucket": "sparkie-new-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:436415735484:android:6ee8972a8b63f2b7e692b9",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCezhRDvFNEbxF5cmpf3DA61ZB2Xi-AgXg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:436415735484:android:eb73af0fc4fdd952e692b9",
+        "android_client_info": {
+          "package_name": "com.greenfund"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCezhRDvFNEbxF5cmpf3DA61ZB2Xi-AgXg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
