@@ -8,6 +8,8 @@
     pkgs.nodePackages.firebase-tools
     pkgs.jdk17
     pkgs.unzip
+    pkgs.openssh
+    pkgs.doas-sudo-shim
   ];
   # Sets environment variables in the workspace
   env = {};

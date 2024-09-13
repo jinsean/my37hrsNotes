@@ -1,5 +1,3 @@
-
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -85,13 +83,20 @@ class _RegisterViewState extends State<RegisterView> {
                               if (e.code == 'weak-password') {
                                 print('The password provided is too weak.');
                               } else if (e.code == 'email-already-in-use') {
-                                print('The account already exists for that email.');
-                              }else if (e.code == 'invalid-email') {
+                                print(
+                                    'The account already exists for that email.');
+                              } else if (e.code == 'invalid-email') {
                                 print('The email address is invalid.');
                               }
                             }
                           },
-                          child: Text('Register'))
+                          child: Text('Register')),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/login/', (route) => false);
+                          },
+                          child: const Text('Already Registered? Login'))
                     ], //Children
                   );
                 default:

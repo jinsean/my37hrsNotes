@@ -59,8 +59,8 @@ class _LoginViewState extends State<LoginView> {
                       ),
                       TextField(
                         controller: _password,
-                        decoration:
-                            const InputDecoration(hintText: 'Enter your password'),
+                        decoration: const InputDecoration(
+                            hintText: 'Enter your password'),
                         obscureText: true,
                         enableSuggestions: false,
                         autocorrect: false,
@@ -84,12 +84,16 @@ class _LoginViewState extends State<LoginView> {
                                 print('No user found for that email.');
                               } else if (e.code == 'wrong-password') {
                                 print('Wrong password provided for that user.');
-                              } else {
-                                
-                              } 
+                              } else {}
                             }
                           },
-                          child: Text('Login'))
+                          child: Text('Login')),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamedAndRemoveUntil('/register/', (route) => false);
+                          },
+                          child: const Text('Not Registered? Register'))
                     ], //Children
                   );
                 default:
