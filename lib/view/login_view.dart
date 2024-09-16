@@ -1,9 +1,9 @@
-import 'dart:developer' as devtools show log;
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/constants/routes.dart';
 import 'package:myapp/firebase_options.dart';
+import 'package:myapp/services/auth/auth_exceptions.dart';
+import 'package:myapp/services/auth/auth_service.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -75,31 +75,45 @@ class _LoginViewState extends State<LoginView> {
                             final password = _password.text;
                             try {
                               //Create a user with email and password, use await cuz it is async or "future"
-                              final userCredential = await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
+                              await AuthService.firebase().logIn(
                                 email: email,
                                 password: password,
                               );
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                '/notes/',
-                                (route) => false,
+                              final user = AuthService.firebase().currentUser;
+                              if (user?.isEmailVerified ?? false) {
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                  notesRoute,
+                                  (route) => false,
+                                );
+                              } else {
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                  verifyEmailRoute,
+                                  (route) => false,
+                                );
+                              }
+
+                            } on UserNotFoundAuthException {
+                              await showErrorDialog(
+                                context,
+                                'User not Found',
                               );
-                              devtools.log(userCredential.toString());
-                            } on FirebaseAuthException catch (e) {
-                              if (e.code == 'weak-password') {
-                                devtools.log("Weak password");
-                              } else if (e.code == 'wrong-password') {
-                                devtools.log("Wrong password");
-                              } else if (e.code == 'user-not-found') {
-                                devtools.log("User not found");
-                              } else {}
+                            } on WrongPasswordAuthException {
+                              await showErrorDialog(
+                                context,
+                                'Wrong Credential;',
+                              );
+                            } on GenericAuthException {
+                              await showErrorDialog(
+                                context,
+                                'Authentication Error',
+                              );
                             }
                           },
                           child: const Text('Login')),
                       TextButton(
                           onPressed: () {
                             Navigator.of(context).pushNamedAndRemoveUntil(
-                                '/register/', (route) => false);
+                                registerRoute, (route) => false);
                           },
                           child: const Text('Not Registered? Register'))
                     ], //Children
@@ -109,4 +123,23 @@ class _LoginViewState extends State<LoginView> {
               }
             }));
   } //Widget build
+}
+
+Future<void> showErrorDialog(BuildContext context, String text) {
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Error'),
+        content: Text(text),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'))
+        ],
+      );
+    },
+  );
 }
