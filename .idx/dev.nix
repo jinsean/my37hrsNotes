@@ -10,6 +10,9 @@
     pkgs.unzip
     pkgs.openssh
     pkgs.doas-sudo-shim
+    pkgs.haskellPackages.snap-templates
+    pkgs.sqlite
+    pkgs.sqlitebrowser
   ];
   # Sets environment variables in the workspace
   env = {};
