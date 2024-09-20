@@ -4,6 +4,7 @@ import 'package:myapp/constants/routes.dart';
 import 'package:myapp/firebase_options.dart';
 import 'package:myapp/services/auth/auth_exceptions.dart';
 import 'package:myapp/services/auth/auth_service.dart';
+import 'package:myapp/utilities/dialogs/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -125,21 +126,4 @@ class _LoginViewState extends State<LoginView> {
   } //Widget build
 }
 
-Future<void> showErrorDialog(BuildContext context, String text) {
-  return showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('Error'),
-        content: Text(text),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'))
-        ],
-      );
-    },
-  );
-}
+

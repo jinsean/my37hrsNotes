@@ -88,7 +88,7 @@ class MockAuthProvider implements AuthProvider {
     required String email,
     required String password,
   }) async{
-    // TODO: implement createUser
+    // implement createUser
     if (!isInitialized) throw NotInitializedException();
       await Future.delayed(const Duration(seconds: 1));
       return logIn(
@@ -98,31 +98,31 @@ class MockAuthProvider implements AuthProvider {
     }
 
   @override
-  // TODO: implement currentUser
+  // implement currentUser
   AuthUser? get currentUser => _user;
 
 
   @override
   Future<void> initialize() async{
-    // TODO: implement initialize
+    // implement initialize
     await Future.delayed(const Duration(seconds: 1));
     _isInitialized = true;
   }
 
   @override
   Future<AuthUser> logIn({required String email, required String password,}) {
-    // TODO: implement logIn
+    // implement logIn
     if (!isInitialized) throw NotInitializedException();
     if (email == 'william.com') throw UserNotFoundAuthException();
     if (password == 'foobar') throw WrongPasswordAuthException();
-    const user = AuthUser(isEmailVerified: false);
+    const user = AuthUser(isEmailVerified: false, email: 'john@gmail.com');
     _user = user;
     return Future.value(user);
   }
 
   @override
   Future<void> logOut() async{
-    // TODO: implement logOut
+    // implement logOut
     if (!isInitialized) throw NotInitializedException();
     if (_user == null) throw UserNotFoundAuthException();
     await Future.delayed(const Duration(seconds: 1));
@@ -131,11 +131,12 @@ class MockAuthProvider implements AuthProvider {
 
   @override
   Future<void> sendEmailVerification() async{
-    // TODO: implement sendEmailVerification
+    //implement sendEmailVerification
     if (!isInitialized) throw NotInitializedException();
     final user = _user;
     if (user == null) throw UserNotFoundAuthException();
-    const newUser = AuthUser(isEmailVerified: true);
+// Suggested code may be subject to a license. Learn more: ~LicenseLog:193538236.
+    const newUser = AuthUser(isEmailVerified: true, email: 'john@gmail.com');
     _user = newUser;
 
   }
