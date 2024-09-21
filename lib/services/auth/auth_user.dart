@@ -5,13 +5,17 @@ import 'package:flutter/material.dart';
 class AuthUser {
   final String? email;
   final bool isEmailVerified;
+  final String id;
+
   const AuthUser({
+    required this.id,
     required this.email,
     required this.isEmailVerified,
   });
 
   factory AuthUser.fromFirebase(User user) => AuthUser(
-        email: user.email,
-        isEmailVerified: user.emailVerified,
-      );
+    id: user.uid,
+    email: user.email!, //Assert that email is not null, email no longer required and it became optional
+    isEmailVerified: user.emailVerified,
+  );
 }
