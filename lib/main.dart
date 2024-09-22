@@ -1,6 +1,8 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myapp/constants/routes.dart';
-import 'package:myapp/services/auth/auth_service.dart';
+// import 'package:myapp/services/auth/auth_service.dart';
 import 'package:myapp/view/login_view.dart';
 import 'package:myapp/view/notes/create_update_note_view.dart';
 import 'package:myapp/view/notes/notes_view.dart';
@@ -17,7 +19,7 @@ void main() async {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: Homepage(),
       routes: {
         loginRoute: (context) => const LoginView(),
         registerRoute: (context) => const RegisterView(),
@@ -29,32 +31,83 @@ void main() async {
   );
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class Homepage extends StatefulWidget {
+  const Homepage({super.key});
+
+  @override
+  State<Homepage> createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    _controller = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        //The future function will run first before widget is build
-        future: AuthService.firebase().initialize(),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              //Change user verified
-              final user = AuthService.firebase().currentUser;
-              if (user != null) {
-                if (user.isEmailVerified) {
-                  return const NotesView();
-                } else {
-                  return const VerifyEmailView();
-                }
-              } else {
-                return const LoginView();
-              }
-            default:
-              return const CircularProgressIndicator();
-          }
-        });
+    return BlocProvider(
+      create: (context) => CounterBloc(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Counter Testing'),
+        ),
+        body: BlocConsumer<CounterBloc, CounterState>(
+          listener: (context, state) {
+            _controller.clear();
+          },
+          builder: (context, state) {
+            final invalidValue =
+                (state is CounterStateInvalidNumber) ? state.invalidValue : '';
+            return Column(children: [
+              Text("Curret value: ${state.value}"),
+              Visibility(
+                visible: state is CounterStateInvalidNumber,
+                child: Text(
+                  "Invalid value: $invalidValue",
+                ),
+              ),
+              TextField(
+                controller: _controller,
+                decoration: const InputDecoration(
+                  hintText: 'Enter a number',
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      context
+                          .read<CounterBloc>()
+                          .add(CounterDecrementEvent(_controller.text));
+                    },
+                    child: const Text('-'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      context
+                          .read<CounterBloc>()
+                          .add(CounterIncrementEvent(_controller.text));
+                    },
+                    child: const Text('+'),
+                  )
+                ],
+              )
+            ]);
+          },
+        ),
+      ),
+    );
   }
 }
 
@@ -83,3 +136,100 @@ Future<bool> showLogOutDialog(BuildContext context) {
     },
   ).then((value) => value ?? false); //Cause user may press outside the dialog
 }
+
+@immutable
+abstract class CounterState {
+  final int value;
+  const CounterState(this.value);
+}
+
+class CounterIncrement extends CounterState {
+  const CounterIncrement(int value) : super(value);
+}
+
+class CounterDecrement extends CounterState {
+  const CounterDecrement(int value) : super(value);
+}
+
+class CounterStateValid extends CounterState {
+  const CounterStateValid(int value) : super(value);
+}
+
+class CounterStateInvalidNumber extends CounterState {
+  final String invalidValue;
+  const CounterStateInvalidNumber({
+    required this.invalidValue,
+    required int previousValue,
+  }) : super(previousValue);
+}
+
+@immutable
+abstract class CounterEvent {
+  final String value;
+  const CounterEvent(this.value);
+}
+
+//This are going to be packed and sent to the reducer or UI
+class CounterIncrementEvent extends CounterEvent {
+  const CounterIncrementEvent(String value) : super(value);
+}
+
+class CounterDecrementEvent extends CounterEvent {
+  const CounterDecrementEvent(String value) : super(value);
+}
+
+class CounterBloc extends Bloc<CounterEvent, CounterState> {
+  CounterBloc() : super(const CounterStateValid(0)) {
+    on<CounterIncrementEvent>((event, emit) {
+      final integer = int.tryParse(event.value);
+      if (integer == null) {
+        emit(CounterStateInvalidNumber(
+          invalidValue: event.value,
+          previousValue: state.value,
+        ));
+      } else {
+        emit(CounterStateValid(state.value + integer));
+      }
+    });
+    on<CounterDecrementEvent>((event, emit) {
+      final integer = int.tryParse(event.value);
+      if (integer == null) {
+        emit(CounterStateInvalidNumber(
+          invalidValue: event.value,
+          previousValue: state.value,
+        ));
+      } else {
+        emit(CounterStateValid(state.value - integer));
+      }
+    });
+  }
+}
+
+// class HomePage extends StatelessWidget {
+//   const HomePage({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return FutureBuilder(
+//         //The future function will run first before widget is build
+//         future: AuthService.firebase().initialize(),
+//         builder: (context, snapshot) {
+//           switch (snapshot.connectionState) {
+//             case ConnectionState.done:
+//               //Change user verified
+//               final user = AuthService.firebase().currentUser;
+//               if (user != null) {
+//                 if (user.isEmailVerified) {
+//                   return const NotesView();
+//                 } else {
+//                   return const VerifyEmailView();
+//                 }
+//               } else {
+//                 return const LoginView();
+//               }
+//             default:
+//               return const CircularProgressIndicator();
+//           }
+//         });
+//   }
+// }
