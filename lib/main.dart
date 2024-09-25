@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myapp/constants/routes.dart';
+import 'package:myapp/helphers/loading/laoding_screen.dart';
 // import 'package:myapp/services/auth/auth_service.dart';
 import 'package:myapp/services/auth/bloc/auth_bloc.dart';
 import 'package:myapp/services/auth/bloc/auth_event.dart';
@@ -44,7 +45,16 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<AuthBloc>().add(const AuthEventInitialize());
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state.isLoading) {
+          LaodingScreen().show(
+              context: context,
+              text: state.loadingText ?? 'Please wait while we are loading');
+        } else {
+          LaodingScreen().hide();
+        }
+      },
       builder: (context, state) {
         if (state is AuthStateLoggedIn) {
           return const NotesView();
@@ -52,10 +62,9 @@ class HomePage extends StatelessWidget {
           return const VerifyEmailView();
         } else if (state is AuthStateLoggedOut) {
           return const LoginView();
-        } else if (state is AuthStateRegistering){
+        } else if (state is AuthStateRegistering) {
           return const RegisterView();
-        } 
-        else {
+        } else {
           return const Scaffold(
             body: CircularProgressIndicator(),
           );
