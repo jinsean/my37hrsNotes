@@ -2,12 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myapp/constants/routes.dart';
-import 'package:myapp/helphers/loading/laoding_screen.dart';
+import 'package:myapp/helpers/loading/laoding_screen.dart';
 // import 'package:myapp/services/auth/auth_service.dart';
 import 'package:myapp/services/auth/bloc/auth_bloc.dart';
 import 'package:myapp/services/auth/bloc/auth_event.dart';
 import 'package:myapp/services/auth/bloc/auth_state.dart';
 import 'package:myapp/services/auth/firebase_auth_provider.dart';
+import 'package:myapp/view/forgot_password_view.dart';
 import 'package:myapp/view/login_view.dart';
 import 'package:myapp/view/notes/create_update_note_view.dart';
 import 'package:myapp/view/notes/notes_view.dart';
@@ -64,6 +65,8 @@ class HomePage extends StatelessWidget {
           return const LoginView();
         } else if (state is AuthStateRegistering) {
           return const RegisterView();
+        } else if (state is AuthStateForgotPassword) {
+          return const ForgotPasswordView();
         } else {
           return const Scaffold(
             body: CircularProgressIndicator(),

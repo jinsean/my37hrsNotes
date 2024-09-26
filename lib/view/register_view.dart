@@ -80,75 +80,86 @@ class _RegisterViewState extends State<RegisterView> {
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.done:
-                    return Column(
-                      children: [
-                        TextField(
-                          //After declare in init state, declare here to store value in the init state
-                          controller: _email,
-                          decoration: const InputDecoration(
-                              hintText: 'Enter your email'),
-                          enableSuggestions: false,
-                          autocorrect: false,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        TextField(
-                          controller: _password,
-                          decoration: const InputDecoration(
-                              hintText: 'Enter your password'),
-                          obscureText: true,
-                          enableSuggestions: false,
-                          autocorrect: false,
-                        ),
-                        TextButton(
-                            //Remember to use async cuz ...
-                            onPressed: () async {
-                              //update the page state varible with the new value
-                              final email = _email.text;
-                              final password = _password.text;
-                              context.read<AuthBloc>().add(
-                                    AuthEventRegister(
-                                      email,
-                                      password,
-                                    ),
-                                  );
-                              //Create a user with email and password, use await cuz it is async or "future"
-                              // try {
-                              //   await AuthService.firebase().createUser(
-                              //     email: email,
-                              //     password: password,
-                              //   );
-                              //   //Send email verification
-                              //   AuthService.firebase().sendEmailVerification();
-                              //   Navigator.of(context)
-                              //       .pushNamed(verifyEmailRoute);
-                              // } on WeakPasswordAuthException {
-                              //   await showErrorDialog(
-                              //     context,
-                              //     'Weak Password',
-                              //   );
-                              // } on EmailAlreadyInUseAuthException {
-                              //   await showErrorDialog(
-                              //     context,
-                              //     'Email already in use',
-                              //   );
-                              // } on GenericAuthException {
-                              //   await showErrorDialog(
-                              //     context,
-                              //     'Failed to register',
-                              //   );
-                              // }
-                            },
-                            child: const Text('Register')),
-                        TextButton(
-                            onPressed: () {
-                              // Navigator.of(context).pushNamedAndRemoveUntil(
-                              //     loginRoute, (route) => false);
-                              context.read<AuthBloc>().add(
-                                    const AuthEventLogOut(),
-                                  );
-                            },
-                            child: const Text('Already Registered? Login'))
-                      ], //Children
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextField(
+                            //After declare in init state, declare here to store value in the init state
+                            controller: _email,
+                            decoration: const InputDecoration(
+                                hintText: 'Enter your email'),
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            autofocus: true,
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                          TextField(
+                            controller: _password,
+                            decoration: const InputDecoration(
+                                hintText: 'Enter your password'),
+                            obscureText: true,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                          ),
+                          Center(
+                            child: Column(
+                              children: [
+                                TextButton(
+                                    //Remember to use async cuz ...
+                                    onPressed: () async {
+                                      //update the page state varible with the new value
+                                      final email = _email.text;
+                                      final password = _password.text;
+                                      context.read<AuthBloc>().add(
+                                            AuthEventRegister(
+                                              email,
+                                              password,
+                                            ),
+                                          );
+                                      //Create a user with email and password, use await cuz it is async or "future"
+                                      // try {
+                                      //   await AuthService.firebase().createUser(
+                                      //     email: email,
+                                      //     password: password,
+                                      //   );
+                                      //   //Send email verification
+                                      //   AuthService.firebase().sendEmailVerification();
+                                      //   Navigator.of(context)
+                                      //       .pushNamed(verifyEmailRoute);
+                                      // } on WeakPasswordAuthException {
+                                      //   await showErrorDialog(
+                                      //     context,
+                                      //     'Weak Password',
+                                      //   );
+                                      // } on EmailAlreadyInUseAuthException {
+                                      //   await showErrorDialog(
+                                      //     context,
+                                      //     'Email already in use',
+                                      //   );
+                                      // } on GenericAuthException {
+                                      //   await showErrorDialog(
+                                      //     context,
+                                      //     'Failed to register',
+                                      //   );
+                                      // }
+                                    },
+                                    child: const Text('Register')),
+                                TextButton(
+                                    onPressed: () {
+                                      // Navigator.of(context).pushNamedAndRemoveUntil(
+                                      //     loginRoute, (route) => false);
+                                      context.read<AuthBloc>().add(
+                                            const AuthEventLogOut(),
+                                          );
+                                    },
+                                    child: const Text('Already Registered? Login')),
+                              ],
+                            ),
+                          )
+                        ], //Children
+                      ),
                     );
                   default:
                     return const Text('Loading...');
